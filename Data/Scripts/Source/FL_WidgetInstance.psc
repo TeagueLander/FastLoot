@@ -4,7 +4,7 @@ FL_ConfigMenu Property FL_ConfigMenuQuest Auto
 FL_CrosshairController Property FL_CrosshairControllerQuest Auto
 
 string source = "box.swf"
-float fUpdateInterval = 0.05
+float fUpdateInterval = 0.01
 
 
 
@@ -32,7 +32,7 @@ Function GetSettingsFromConfigMenu()
 	FL_ConfigMenuQuest.applyWidgetSettings()
 EndFunction
 
-Function DisplayBuiltWidget(String containerName, String actionText, String[] itemNames, int arrowPosition, bool arrowVisible, bool[] blueText, bool[] redText)
+Function DisplayBuiltWidget(String containerName, String actionText, String[] itemNames, int arrowPosition, bool arrowVisible, bool[] blueText, bool[] redText, bool[] greyText)
 	UI.InvokeString(HUD_MENU, WidgetRoot + ".setContainerName", containerName)
 	UI.InvokeString(HUD_MENU, WidgetRoot + ".setActionText", actionText)
 	int i = 0
@@ -44,6 +44,8 @@ Function DisplayBuiltWidget(String containerName, String actionText, String[] it
 	UI.InvokeBool(HUD_MENU, WidgetRoot + ".setArrowVisible", arrowVisible)
 	UI.InvokeBoolA(HUD_MENU, WidgetRoot + ".setMagicalColour", blueText)
 	UI.InvokeBoolA(HUD_MENU, WidgetRoot + ".setStolenColour", redText)
+	UI.InvokeBoolA(HUD_MENU, WidgetRoot + ".setGreyedColour", greyText)
+	
 EndFunction
 
 Function SetSelectorPosition(int arrowPosition)

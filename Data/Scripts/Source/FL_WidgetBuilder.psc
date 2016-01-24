@@ -11,6 +11,7 @@ ObjectReference curRef
 int iCurRefNumItems
 int iSelectorPosition = 0 ;Where our selector is relative to the top of the list that is currently displayed
 bool bTakeInput = false ;If the display is being changed be cannot receive input
+bool bStopCreating = false
 
 ;Linked-List Root
 FL_FormNode rootNode ;rootNode will always stay empty of a form for simplicity!
@@ -27,6 +28,16 @@ Form[] priorityListArray
 ;Constants
 int iInitialLinkedListSize = 6
 float fSingleUpdateInterval = 0.5
+String bottomLabel = "E) TAKE   R) TRANSFER"
+
+bool Property TakeInput
+	bool function get()
+		return bTakeInput
+	endFunction
+	function set(bool a_val)
+		bTakeInput = a_val
+	endFunction
+endProperty
 
 Event OnInit()
 	NodeSpawnPoint = Game.GetPlayer() ;REplace this later
@@ -51,10 +62,14 @@ EndFunction
 
 
 Function removeAndResetWidget()
-	;FL_WidgetQuest.Visible = false
+	bStopCreating = true
 	bTakeInput = false
 	FL_WidgetQuest.FadeOutWidget()
-	rootNode.deleteAllNodes()
+	rootNode.NextNode.PrevNode = none
+	rootNode.NextNode = none
+	rootNode.NextNode.deleteAllNodes()
+	rootNode.deleteNode()
+	bStopCreating = false
 	iSelectorPosition = 0
 	;Here we should reset all the text and stuff
 EndFunction
@@ -70,6 +85,7 @@ Function getInitialItems()
 	if (iCurRefNumItems < max)
 		max = iCurRefNumItems
 	endif
+	
 	while (i < max)
 		Form curForm = curRef.GetNthForm(i)
 		int curFormAmount = curRef.GetItemCount(curForm)
@@ -82,6 +98,10 @@ EndFunction
 Function GetRemainingItems()
 	int i = iInitialLinkedListSize
 	while (i < iCurRefNumItems)
+		if (curRef != Game.GetCurrentCrosshairRef())
+			removeAndResetWidget()
+			return
+		endif
 		Form curForm = curRef.GetNthForm(i)
 		int curFormAmount = 0;curRef.GetItemCount(curForm)
 		tailNode = newTailNode(curForm, curFormAmount, tailNode)
@@ -100,13 +120,13 @@ FL_FormNode Function newTailNode(Form aForm, int aAmount, FL_FormNode pNode)
 EndFunction
 
 Function takeItem()
-	if (bTakeInput)
+	if (bTakeInput && currentSelectedNode.NodeForm.IsPlayable())
 		bTakeInput = false
 		FL_FormNode tempNode = currentSelectedNode;Holds the node because we will delete it after
 		
 		;Actually take the item
 		curRef.RemoveItem(tempNode.NodeForm, tempNode.Amount, true, Game.GetPlayer())
-		if (tempNode != rootNode)
+		if (tempNode != rootNode && tempNode != none)	
 			FL_SoundControllerQuest.PlayPickupSound(tempNode.NodeForm)
 		endif
 		
@@ -126,7 +146,8 @@ Function takeItem()
 				FL_WidgetQuest.SetSelectorPosition(iSelectorPosition)
 			endif
 
-		else 
+		else
+			currentSelectedNode = none
 			currentTopNode = rootNode
 		endif
 		tempNode.deleteNode()
@@ -179,6 +200,7 @@ int Function displayItems()
 	String[] itemLabels = new String[5]
 	bool[] blueText = new bool[5]
 	bool[] redText = new bool[5]
+	bool[] greyText = new bool[5]
 	
 	
 	;Loop through first 5 nodes, setup their text and whether they are magical or stolen
@@ -199,6 +221,11 @@ int Function displayItems()
 		;Setup stolen
 		;NOTWORKING YET
 		
+		;Setup greyed
+		if (!itNode.NodeForm.isPlayable())
+			greyText[i] = true
+		endif
+		
 		itNode = itNode.NextNode	
 		i += 1
 	endwhile
@@ -208,6 +235,7 @@ int Function displayItems()
 		itemLabels[4] = ". . ."
 		redText[4] = false
 		blueText[4] = false
+		greyText[4] = false
 	endif
 	
 	bool arrowVisible = false
@@ -217,8 +245,7 @@ int Function displayItems()
 	
 	;ACTUALLY DISPLAY THE ITEMS
 	;THIS IS BUILT LIKE THIS: DisplayBuiltWidget(String containerName, String actionText, String[] itemNames, int arrowPosition, bool arrowVisible)
-	FL_WidgetQuest.DisplayBuiltWidget(curRef.GetDisplayName(),  "E) TAKE   G) TRANSFER", itemLabels,  iSelectorPosition,  arrowVisible, blueText, redText) ;
-	;FL_WidgetQuest.SetContainerName(currentSelectedNode.NodeForm)
+	FL_WidgetQuest.DisplayBuiltWidget(curRef.GetDisplayName(),  bottomLabel, itemLabels,  iSelectorPosition,  arrowVisible, blueText, redText, greyText) ;
 	bTakeInput = true
 EndFunction
 
