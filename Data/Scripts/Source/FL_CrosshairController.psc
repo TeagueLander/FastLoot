@@ -6,6 +6,7 @@ Controls the crosshair and input keys
 }
 FL_WidgetBuilder Property FL_BuilderQuest Auto
 FormList Property FL_FormList Auto
+Actor Property PlayerRef Auto
 MiscObject Property NodeType Auto
 float fUpdateInterval = 0.02 ;This determines how often we check to make sure the widget isn't left on the screen
 ObjectReference curRef
@@ -104,7 +105,7 @@ Event OnKeyDown(int keycode)
 			elseif (keycode == iScrollUpKey); || keycode == 200)
 				FL_BuilderQuest.scrollUp()
 			elseif (keycode == iTransferKey)
-				curRef.Activate(Game.GetPlayer(),true)
+				curRef.Activate(PlayerRef,true)
 			elseif (keycode == iActivateKey)
 				if (curRef)
 					FL_BuilderQuest.takeItem()
@@ -152,19 +153,19 @@ function registerInput()
 	RegisterForKey(iActivateKey)
 	
 	UnregisterForKey(iTransferKey)
-	iTransferKey = Input.GetMappedKey("Ready Weapon")
+	iTransferKey = 34;Input.GetMappedKey("Ready Weapon")
 	RegisterForKey(iTransferKey)
 	
 endfunction
 
 function DisableConflictingActions()
 	curRef.BlockActivation()
-	Game.DisablePlayerControls(false, true, true, false, false, false, false)
+	Game.DisablePlayerControls(false, false, true, false, false, false, false)
 endfunction
 
 function EnableConflictingActions()
 	curRef.BlockActivation(false)
-	Game.EnablePlayerControls(false, true, true, false, false, false, false)
+	Game.EnablePlayerControls(false, false, true, false, false, false, false)
 endfunction
 
 ;Queue input functions

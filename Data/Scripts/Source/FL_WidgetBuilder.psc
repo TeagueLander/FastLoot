@@ -20,6 +20,7 @@ FL_FormNode currentSelectedNode
 FL_FormNode tailNode ;just used when building the list
 MiscObject Property NodeType Auto
 ObjectReference Property NodeSpawnPoint Auto
+Actor Property PlayerRef Auto
 
 ;Properties to check
 FormList Property priorityList Auto
@@ -28,7 +29,7 @@ Form[] priorityListArray
 ;Constants
 int iInitialLinkedListSize = 6
 float fSingleUpdateInterval = 0.5
-String bottomLabel = "E) TAKE   R) TRANSFER"
+String bottomLabel = "E) TAKE   G) TRANSFER"
 
 bool Property TakeInput
 	bool function get()
@@ -40,7 +41,7 @@ bool Property TakeInput
 endProperty
 
 Event OnInit()
-	NodeSpawnPoint = Game.GetPlayer() ;REplace this later
+	NodeSpawnPoint = PlayerRef ;REplace this later
 EndEvent
 
 ;Functions
@@ -71,6 +72,7 @@ Function removeAndResetWidget()
 	rootNode.deleteNode()
 	bStopCreating = false
 	iSelectorPosition = 0
+	;curRef.PlayGamebryoAnimation("close",false,1.0)
 	;Here we should reset all the text and stuff
 EndFunction
 
@@ -88,8 +90,14 @@ Function getInitialItems()
 	
 	while (i < max)
 		Form curForm = curRef.GetNthForm(i)
-		int curFormAmount = curRef.GetItemCount(curForm)
-		tailNode = newTailNode(curForm, curFormAmount, tailNode)
+		if (curForm.GetName() != "")
+			int curFormAmount = curRef.GetItemCount(curForm)
+			tailNode = newTailNode(curForm, curFormAmount, tailNode)
+		else
+			if (max+1 <= iCurRefNumItems)
+				max+=1
+			endif
+		endif
 		i += 1
 	endwhile
 	
@@ -103,10 +111,16 @@ Function GetRemainingItems()
 			return
 		endif
 		Form curForm = curRef.GetNthForm(i)
-		int curFormAmount = 0;curRef.GetItemCount(curForm)
-		tailNode = newTailNode(curForm, curFormAmount, tailNode)
+		if (curForm.GetName() != "")
+			int curFormAmount = 0;curRef.GetItemCount(curForm)
+			tailNode = newTailNode(curForm, curFormAmount, tailNode)
+		endif
 		i += 1
 	endwhile
+EndFunction
+
+Function GetNextItem()
+
 EndFunction
 
 ;LL FUNCTION
@@ -125,7 +139,8 @@ Function takeItem()
 		FL_FormNode tempNode = currentSelectedNode;Holds the node because we will delete it after
 		
 		;Actually take the item
-		curRef.RemoveItem(tempNode.NodeForm, tempNode.Amount, true, Game.GetPlayer())
+		;curRef.PlayGamebryoAnimation("open", false, 1.0)
+		curRef.RemoveItem(tempNode.NodeForm, tempNode.Amount, true, PlayerRef)
 		if (tempNode != rootNode && tempNode != none)	
 			FL_SoundControllerQuest.PlayPickupSound(tempNode.NodeForm)
 		endif
@@ -209,6 +224,9 @@ int Function displayItems()
 		
 		;Setup labels and amounts
 		itemLabels[i] = itNode.NodeForm.GetName()
+		;if itemLabels[i] == "" && itNode.NodeForm.GetFormID() != 0
+		;	itemLabels[i] = "No Object"
+		;endif
 		if (itNode.Amount > 1)
 			itemLabels[i] = itemLabels[i] + " (" + itNode.Amount + ")"
 		endif
