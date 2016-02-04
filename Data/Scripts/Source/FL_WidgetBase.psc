@@ -1,11 +1,14 @@
 Scriptname FL_WidgetBase extends SKI_WidgetBase  
+{
+Created by Teague Lander January 6th 2016
+Objects of this type have basic functions that widgets should have like enabling visibility and fade in and fade out
+}
 
 ;CONSTANTS
-string source = "box.swf"
+string SOURCE
 bool _visible = true
 float fFadeTime = 0.2 ;Should be made no less than this or we will see text changings
 float fOutlineBoxAlpha = 75.0
-string sNextAction = ""
 int screenWidth
 int screenHeight
 
@@ -55,7 +58,7 @@ EndFunction
 
 ; @overrides SKI_WidgetBase
 string function GetWidgetSource()
-	return source
+	return SOURCE
 endFunction
 
 ; @overrides SKI_WidgetBase

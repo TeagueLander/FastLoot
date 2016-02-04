@@ -23,13 +23,12 @@ ObjectReference Property NodeSpawnPoint Auto
 Actor Property PlayerRef Auto
 
 ;Properties to check
-FormList Property priorityList Auto
-Form[] priorityListArray
+FormList Property PriorityList Auto
+Form[] priorityArray
 
 ;Constants
-int iInitialLinkedListSize = 6
-float fSingleUpdateInterval = 0.5
-String bottomLabel = "E) TAKE   G) TRANSFER"
+int INITIAL_LINKED_LIST_SIZE = 6
+String BOTTOM_LABEL = "E) TAKE   G) TRANSFER"
 
 bool Property TakeInput
 	bool function get()
@@ -42,6 +41,7 @@ endProperty
 
 Event OnInit()
 	NodeSpawnPoint = PlayerRef ;REplace this later
+	priorityArray = PriorityList.ToArray()
 EndEvent
 
 ;Functions
@@ -55,7 +55,6 @@ Function buildWidgetFromObj(ObjectReference obj)
 	currentSelectedNode = currentTopNode
 	iSelectorPosition = 0
 	displayItems()
-	;FL_WidgetQuest.Visible = true
 	FL_WidgetQuest.FadeInWidget()
 	GetRemainingItems()
 	
@@ -81,22 +80,33 @@ Function getInitialItems()
 	tailNode = NodeSpawnPoint.PlaceAtMe(NodeType) as FL_FormNode
 	rootNode = tailNode
 	
-	;BUILD FIRST 5(6?) NODES
-	int i = 0
-	int max = iInitialLinkedListSize ;max nodes to build
+	;BUILD FIRST 6 NODES
+	int i = 0 ; Number of nodes we currently have
+	int max = INITIAL_LINKED_LIST_SIZE ;max nodes to build
 	if (iCurRefNumItems < max)
 		max = iCurRefNumItems
 	endif
 	
+	;Get Priority Items
+	int j = 0
+	while (j < priorityArray.Length)
+		int curFormAmount = curRef.GetItemCount(priorityArray[j])
+		if curFormAmount > 0
+			tailNode = newTailNode(priorityArray[j], curFormAmount, tailNode)
+			i += 1
+		endif
+		j += 1
+	endwhile
+	
 	while (i < max)
 		Form curForm = curRef.GetNthForm(i)
-		if (curForm.GetName() != "")
-			int curFormAmount = curRef.GetItemCount(curForm)
-			tailNode = newTailNode(curForm, curFormAmount, tailNode)
-		else
+		if (curForm.GetName() == "" || (curForm as Ammo) || (curForm == priorityArray[0]));We skip this node if it is an empty item or a node we've already built
 			if (max+1 <= iCurRefNumItems)
 				max+=1
 			endif
+		else
+			int curFormAmount = curRef.GetItemCount(curForm)
+			tailNode = newTailNode(curForm, curFormAmount, tailNode)
 		endif
 		i += 1
 	endwhile
@@ -104,24 +114,25 @@ Function getInitialItems()
 EndFunction 
 
 Function GetRemainingItems()
-	int i = iInitialLinkedListSize
+	int i = INITIAL_LINKED_LIST_SIZE
 	while (i < iCurRefNumItems)
 		if (curRef != Game.GetCurrentCrosshairRef())
 			removeAndResetWidget()
 			return
-		endif
+		endif 
 		Form curForm = curRef.GetNthForm(i)
-		if (curForm.GetName() != "")
-			int curFormAmount = 0;curRef.GetItemCount(curForm)
+		if !(curForm.GetName() == "" || (curForm as Ammo) || (curForm == priorityArray[0]))
+			int curFormAmount = curRef.GetItemCount(curForm);curRef.GetItemCount(curForm)
 			tailNode = newTailNode(curForm, curFormAmount, tailNode)
 		endif
 		i += 1
 	endwhile
 EndFunction
 
-Function GetNextItem()
-
-EndFunction
+;Function GetNextItem(Form curForm)
+;	int curFormAmount = curRef.GetItemCount(curForm);curRef.GetItemCount(curForm)
+;	tailNode = newTailNode(curForm, curFormAmount, tailNode)
+;EndFunction
 
 ;LL FUNCTION
 FL_FormNode Function newTailNode(Form aForm, int aAmount, FL_FormNode pNode)
@@ -134,7 +145,7 @@ FL_FormNode Function newTailNode(Form aForm, int aAmount, FL_FormNode pNode)
 EndFunction
 
 Function takeItem()
-	if (bTakeInput && currentSelectedNode.NodeForm.IsPlayable())
+	if (true && currentSelectedNode.NodeForm.IsPlayable())
 		bTakeInput = false
 		FL_FormNode tempNode = currentSelectedNode;Holds the node because we will delete it after
 		
@@ -224,9 +235,7 @@ int Function displayItems()
 		
 		;Setup labels and amounts
 		itemLabels[i] = itNode.NodeForm.GetName()
-		;if itemLabels[i] == "" && itNode.NodeForm.GetFormID() != 0
-		;	itemLabels[i] = "No Object"
-		;endif
+
 		if (itNode.Amount > 1)
 			itemLabels[i] = itemLabels[i] + " (" + itNode.Amount + ")"
 		endif
@@ -263,7 +272,7 @@ int Function displayItems()
 	
 	;ACTUALLY DISPLAY THE ITEMS
 	;THIS IS BUILT LIKE THIS: DisplayBuiltWidget(String containerName, String actionText, String[] itemNames, int arrowPosition, bool arrowVisible)
-	FL_WidgetQuest.DisplayBuiltWidget(curRef.GetDisplayName(),  bottomLabel, itemLabels,  iSelectorPosition,  arrowVisible, blueText, redText, greyText) ;
+	FL_WidgetQuest.DisplayBuiltWidget(curRef.GetDisplayName(),  BOTTOM_LABEL, itemLabels,  iSelectorPosition,  arrowVisible, blueText, redText, greyText) ;
 	bTakeInput = true
 EndFunction
 

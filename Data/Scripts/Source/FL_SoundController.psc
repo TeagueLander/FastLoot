@@ -1,5 +1,9 @@
 Scriptname FL_SoundController extends Quest  
-
+{
+Created by Teague Lander January 18th 2016
+Called by FL_WidgetBuilder
+Allows us to determine and play a 'pickup' sound based on an passed in form
+}
 Sound Property GoldSound Auto
 Sound Property MiscSound Auto
 Sound Property ArmorSound Auto

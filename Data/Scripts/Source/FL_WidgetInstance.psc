@@ -1,9 +1,13 @@
 Scriptname FL_WidgetInstance extends FL_WidgetBase  
+{
+Created by Teague Lander January 6th 2016
+Objects of this type have basic functions that widgets should have like enabling visibility and fade in and fade out
+}
 
 FL_ConfigMenu Property FL_ConfigMenuQuest Auto
 FL_CrosshairController Property FL_CrosshairControllerQuest Auto
 
-string source = "box.swf"
+string SOURCE = "box.swf"
 float fUpdateInterval = 0.01
 
 
@@ -59,4 +63,8 @@ EndFunction
 ;LEGACY CAN PROBABLY DELETE
 Function SetContainerName(String name)
 	UI.InvokeString(HUD_MENU, WidgetRoot + ".setContainerName", name)
+EndFunction
+
+Function SetMagicalColourValue(int color)
+	UI.InvokeInt(HUD_MENU, WidgetRoot + ".setMagicalColourValue", color)
 EndFunction

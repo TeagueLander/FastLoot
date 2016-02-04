@@ -26,6 +26,10 @@ FL_WidgetInstance Property FL_WidgetQuest Auto
 	float fAlphaValue = 75.0
 	float fAlphaDefault = 75.0
 	float fAlphaMaxValue = 800.0
+	;Colour-picker
+	int MagicalColour_S
+	int iMagicalColour = 0xA2BEFF
+	int iMagicalDefault = 0xA2BEFF
 	
 ;SCREEN CONTANTS
 float fOffsetInterval = 1.0
@@ -40,6 +44,8 @@ string sVerticalOffsetLabel = "Vertical Offset"
 string sMiscLabel = "Misc"
 string sScaleLabel = "$Scale"
 string sAlphaLabel = "Transparency"
+string sColourLabel = "Color"
+string sMagicalColourLabel = "Magical Color"
 
 event OnConfigClose()
     { Called when the config menu is closed }
@@ -55,7 +61,12 @@ event OnPageReset(string page)
 		HorizontalOffset_S = AddSliderOption(sHorizontalOffsetLabel, fHorizontalOffsetValue, sSliderFormat)
 		VerticalOffset_S = AddSliderOption(sVerticalOffsetLabel, fVerticalOffsetValue, sSliderFormat)
 		
+		;Colour
+		AddHeaderOption(sColourLabel)
+		MagicalColour_S = AddColorOption(sMagicalColourLabel,iMagicalColour)
+		
 		;Misc
+		SetCursorPosition(1)
 		AddHeaderOption(sMiscLabel)
 		Scale_S = AddSliderOption(sScaleLabel, fScaleValue, sSliderFormat)
 		Alpha_S = AddSliderOption(sAlphaLabel, fAlphaValue, sSliderFormat)
@@ -82,6 +93,9 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogDefaultValue(fScaleDefault)
 		SetSliderDialogRange(0.0, fAlphaMaxValue)
 		SetSliderDialogInterval(fScaleInterval)
+	elseIf (option == MagicalColour_S)
+		SetColorDialogStartColor(iMagicalColour)
+		SetColorDialogDefaultColor(iMagicalDefault)
 	endIf
 endEvent
 
@@ -101,6 +115,13 @@ event OnOptionSliderAccept(int option, float value)
 	endIf
 endEvent
 
+event OnOptionColorAccept(int option, int color)
+	if (option == MagicalColour_S)
+		iMagicalColour = color
+		SetColorOptionValue(MagicalColour_S,iMagicalColour)
+	endif
+endEvent
+
 event OnOptionDefault(int option)
 	if (option == HorizontalOffset_S)
 		fHorizontalOffsetValue = fHorizontalDefault
@@ -114,6 +135,9 @@ event OnOptionDefault(int option)
 	elseIf (option == Scale_S)
 		fScaleValue = fScaleDefault
 		SetSliderOptionValue(Scale_S, fScaleValue, sSliderFormat)
+	elseIf (option == MagicalColour_S)
+		iMagicalColour = iMagicalDefault
+		SetColorOptionValue(MagicalColour_S,iMagicalColour)
 	endIf
 endEvent
 
@@ -121,5 +145,6 @@ function applyWidgetSettings()
 	FL_WidgetQuest.setPosition(fHorizontalOffsetValue,fVerticalOffsetValue)
 	FL_WidgetQuest.SetOutlineBoxAlpha(fAlphaValue)
 	FL_WidgetQuest.SetUIScale(fScaleValue)
+	FL_WidgetQuest.setMagicalColourValue(iMagicalColour)
 endfunction
 		

@@ -8,8 +8,10 @@ FL_WidgetBuilder Property FL_BuilderQuest Auto
 FormList Property FL_FormList Auto
 Actor Property PlayerRef Auto
 MiscObject Property NodeType Auto
-float fUpdateInterval = 0.02 ;This determines how often we check to make sure the widget isn't left on the screen
 ObjectReference curRef
+
+;CONSTANTS
+float UPDATE_INTERVAL = 0.02 ;This determines how often we check to make sure the widget isn't left on the screen
 
 int iScrollDownKey
 int iScrollUpKey
@@ -17,10 +19,6 @@ int iActivateKey
 int iTransferKey
 bool  bInputAllowed = true
 bool bMenuOpen = false
-
-;INPUT Queue
-;FL_FormNode inputRoot
-;FL_FormNode inputTail
 
 bool Property InputAllowed
 	bool function get()
@@ -36,7 +34,7 @@ Event OnInit()
 	registerInput()
 	;inputRoot = Game.GetPlayer().PlaceAtMe(NodeType) as FL_FormNode
 	;inputTail = inputRoot
-	RegisterForSingleUpdate(fUpdateInterval)
+	RegisterForSingleUpdate(UPDATE_INTERVAL)
 	
 	;REGISTER MENUS
 	RegisterForMenu("BarterMenu")
@@ -83,7 +81,7 @@ Event OnUpdate()
 		curRef = Game.GetCurrentCrosshairRef()
 		updateFLWidgetBuilder()	
 	endif
-	RegisterForSingleUpdate(fUpdateInterval)
+	RegisterForSingleUpdate(UPDATE_INTERVAL)
 EndEvent
 
 Event OnMenuOpen(String menu)
@@ -117,9 +115,8 @@ Event OnKeyDown(int keycode)
 	endif
 EndEvent
 
-function updateFLWidgetBuilder() ;test formlist and dead body
-	;REPLACE FORMLIST HERE
-	;instead of checking containers just check to see if it can hold items?
+function updateFLWidgetBuilder()
+	;If its a container or a dead actor
 	If (curRef as Actor).isDead() || ((curRef.GetBaseObject() as Container) && !curRef.isLocked() )
 		DisableConflictingActions()
 		FL_BuilderQuest.buildWidgetFromObj(curRef)
@@ -168,15 +165,3 @@ function EnableConflictingActions()
 	Game.EnablePlayerControls(false, false, true, false, false, false, false)
 endfunction
 
-;Queue input functions
-;function push(int keycode)
-;	inputTail.NextNode = Game.GetPlayer().PlaceAtMe(NodeType) as FL_FormNode
-;	inputTail = inputTail.NextNode
-;	inputTail.Amount = keycode
-;endFunction
-
-;int function pop()
-;	int keycode = inputRoot.NextNode.Amount
-;	inputRoot.NextNode.deleteNode()
-;	return keycode
-;endFunction
