@@ -5,7 +5,7 @@ Objects of this type have basic functions that widgets should have like enabling
 }
 
 ;CONSTANTS
-string SOURCE
+string SOURCE = "box.swf"
 bool _visible = true
 float fFadeTime = 0.2 ;Should be made no less than this or we will see text changings
 float fOutlineBoxAlpha = 75.0
