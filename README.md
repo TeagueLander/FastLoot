@@ -4,7 +4,6 @@ Requires:
 -SKSE 
 -SkyUI 
 
-This mod is a WIP: please post a bug and I will get to it as soon as I can.  
 Issues:
 - Please quicksave and quickload up to 2 times if the popup is not showing up (only has to be done the first time you use the mod).
 - People with other UI mods such as iHud have reported that the popup does not show up.  Being looked into.
