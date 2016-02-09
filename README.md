@@ -1,3 +1,7 @@
+NOTE FOR ANYONE WHO WANTS TO MODIFY THIS CODE:
+Skyrim sometimes runs scripts and event calls in paralell which can lead to some unusual behaviour (ie You are trying to access a few nodes but they are being deleted by another function as you access them).
+The mod accounts for the cases where this might happen.  Ensure conflicting functions/events are queued up or don't occur when called.
+
 Adds the Fallout 4 looting system to Skyrim.  For those who haven't played F4, this mod pops up a menu when you look at a container and lets you take items out without going into any menus, dramatically decreasing the amount of time you spend opening containers!  
 
 Requires: 
