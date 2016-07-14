@@ -1,4 +1,5 @@
 This plugin is hosted on Skyrim Nexus
+
 Link: http://www.nexusmods.com/skyrim/mods/72157/
 
 NOTE FOR ANYONE WHO WANTS TO MODIFY THIS CODE:
