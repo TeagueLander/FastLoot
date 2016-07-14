@@ -1,3 +1,6 @@
+This plugin is hosted on Skyrim Nexus
+Link: http://www.nexusmods.com/skyrim/mods/72157/
+
 NOTE FOR ANYONE WHO WANTS TO MODIFY THIS CODE:
 Skyrim runs scripts asynchonyously which can lead to some unusual behaviour (ie You are trying to access a few nodes but they are being deleted by another function as you access them).
 The mod accounts for the cases where this might happen.  Ensure conflicting functions/events are queued up or don't occur when called.
