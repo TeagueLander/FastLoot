@@ -2,7 +2,7 @@ This plugin is hosted on Skyrim Nexus
 
 Link: http://www.nexusmods.com/skyrim/mods/72157/
 
-<img src="PerfectCast.jpg" width="540">
+<img src="PerfectCast.jpg">
 
 Adds the Fallout 4 looting system to Skyrim.  For those who haven't played F4, this mod pops up a menu when you look at a container and lets you take items out without going into any menus, dramatically decreasing the amount of time you spend opening containers!  
 
