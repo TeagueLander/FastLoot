@@ -2,9 +2,7 @@ This plugin is hosted on Skyrim Nexus
 
 Link: http://www.nexusmods.com/skyrim/mods/72157/
 
-NOTE FOR ANYONE WHO WANTS TO MODIFY THIS CODE:
-Skyrim runs scripts asynchonyously which can lead to some unusual behaviour (ie You are trying to access a few nodes but they are being deleted by another function as you access them).
-The mod accounts for the cases where this might happen.  Ensure conflicting functions/events are queued up or don't occur when called.
+<img src="PerfectCast.jpg" width="540">
 
 Adds the Fallout 4 looting system to Skyrim.  For those who haven't played F4, this mod pops up a menu when you look at a container and lets you take items out without going into any menus, dramatically decreasing the amount of time you spend opening containers!  
 
