@@ -1,6 +1,7 @@
 This plugin is hosted on Skyrim Nexus
 
 Link: http://www.nexusmods.com/skyrim/mods/72157/
+Video: https://www.youtube.com/watch?v=c4AAAQWYCy4
 
 <img src="PerfectCast.jpg">
 
